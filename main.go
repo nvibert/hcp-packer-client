@@ -25,7 +25,6 @@ func main() {
 	orgID := os.Getenv("HCP_ORGANIZATION_ID")
 	projID := os.Getenv("HCP_PROJECT_ID")
 	bucketSlug := os.Getenv("HCP_BUCKET_SLUG")
-
 	listParamsA := packer.NewPackerServiceGetBucketParams()
 	listParamsA.LocationOrganizationID = orgID
 	listParamsA.LocationProjectID = projID
@@ -79,9 +78,9 @@ func main() {
 		fmt.Println("### Image ID ###")
 		fmt.Printf(respB.Payload.Iteration.Builds[len(respB.Payload.Iteration.Builds)-1].Images[len(respB.Payload.Iteration.Builds[len(respB.Payload.Iteration.Builds)-1].Images)-1].ImageID)
 		fmt.Println()
-		fmt.Println("### Image Creation Date ###")
-		fmt.Printf(respB.Payload.Iteration.Builds[len(respB.Payload.Iteration.Builds)-1].CreatedAt.String())
-		fmt.Println()
+		//fmt.Println("### Image Creation Date ###")
+		//fmt.Printf(respB.Payload.Iteration.Builds[len(respB.Payload.Iteration.Builds)-1].CreatedAt.String())
+		//fmt.Println()
 		fmt.Println("### Image Region ###")
 		fmt.Printf(respB.Payload.Iteration.Builds[len(respB.Payload.Iteration.Builds)-1].Images[len(respB.Payload.Iteration.Builds[len(respB.Payload.Iteration.Builds)-1].Images)-1].Region)
 		fmt.Println()
@@ -90,4 +89,26 @@ func main() {
 		fmt.Printf("Response: %#v\n\n", respB.Payload.Iteration)
 	}
 
+	listParamsC := packer.NewPackerServiceGetRegistryTFCRunTaskAPIParams()
+	listParamsC.LocationOrganizationID = orgID
+	listParamsC.LocationProjectID = projID
+	taskID := "validation"
+	listParamsC.TaskType = taskID
+	respC, errC := packerClient.PackerServiceGetRegistryTFCRunTaskAPI(listParamsC, nil)
+
+
+	if errC != nil {
+		log.Fatal(errC)
+	}
+
+	if len(respC.Payload.APIURL) > 0 {
+		fmt.Println("### HCP API URL ###")
+		fmt.Printf(respC.Payload.APIURL)
+		fmt.Println()
+		fmt.Println("### HCP HMAC ###")
+		fmt.Printf(respC.Payload.HmacKey)
+		fmt.Println()
+	} else {
+		fmt.Printf("Response: %#v\n\n", respC.Payload)
+	}
 }
